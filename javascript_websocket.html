@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script type="text/javascript">
+
+      $(document).ready(function(){
+        //Web Socket comunication
+         //Connect to server
+         var ws = new WebSocket("ws://localhost:8888/websocket");
+         //console.log(ws);
+         //Open the socket and say hi
+         ws.onopen = function() {
+           ws.send("Hello, world");
+         };
+
+         //Receive message form server
+         ws.onmessage = function (evt) {
+           console.log("Evt Data: " + evt.data);
+           //json = JSON.parse(evt.data);
+           //console.log(json);
+
+           //set the variables of the object to global variables
+           //var data1 = json.data1;
+           //var data2 = json.data2;
+         }
+
+        $('#onbtn').click(function () {
+          console.log("ON?");
+           //ws.send(JSON.stringify({"relay1":1}));
+           ws.send("mqtt")
+        });
+        $('#offbtn').click(function () {
+          console.log("OFF?");
+           //ws.send(JSON.stringify({"relay1":0}));
+           ws.send("mongo")
+        });
+
+        $('#databtn').click(function () {
+          console.log("data?");
+          var desde = $('#hora_desde').val();
+          var hasta = $('#hora_hasta').val();
+          var jsonmsg = JSON.stringify({"desde": desde, "hasta": hasta});
+          console.log("JSONMSG: " + jsonmsg);
+          ws.send(jsonmsg);
+          //ws.send("mongo")
+        });
+      });
+
+      </script>
+
+   </head>
+   <body>
+      <p>Hola</p>
+      <div id="sse">
+         <br>
+        <label id="onbtn" class="btn btn-success" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+          <input type="button" name="on" value="on" data-parsley-multiple="gender">
+        </label>
+        <label id="offbtn" class="btn btn-danger" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+          <input type="button" name="off" value="off" data-parsley-multiple="gender">
+        </label>
+        <br>
+        Hora Desde: <input id="hora_desde" type="text" name="hora_desde" value=""><br>
+        Hora Hasta: <input id="hora_hasta" type="text" name="hora_hasta" value=""><br>
+        <label id="databtn" class="btn btn-danger" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+          <input type="button" name="data" value="data" data-parsley-multiple="gender">
+        </label>
+      </div>
+
+   </body>
+</html>
