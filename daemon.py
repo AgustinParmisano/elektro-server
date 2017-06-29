@@ -26,7 +26,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
     # the client connected
     def open(self):
-        print ("New client connected")
+        print ("New client connected " + " Self: " + str(self) + " Clients: " + str(clients))
         #self.write_message("You are connected")
         clients.append(self)
         tornado.ioloop.IOLoop.instance().add_timeout(timedelta(seconds=1), self.test)
@@ -59,9 +59,22 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     # the client sent the message
     def on_message(self, message):
         print ("Message From Web: " + message)
+        print (type(message))
         try:
-            #message = ast.literal_eval(message)
-            #print("AST Message: " + str(message))
+            message = ast.literal_eval(message)
+
+            print("AST Message: " + str(message))
+            username = message["username"]
+            password = message["password"]
+
+            print "Username: " + str(username)
+            print "Password: " + str(password)
+
+            #if (username == "admin") and (password == "admin"):
+                #self.write_message("admin")
+
+            result = mongo.get_user_auth("users", username, password)
+            self.write_message(result)
 
             if message == "on":
                 #Send message from websocket to mqtt
@@ -71,22 +84,25 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 #Save message from websocket to mongo
                 publish.single("state", "off", hostname="localhost")
 
-            else:
+            elif (message == "aaa"):
                 #Eval if message is valid and do something (e.g: search in mongo)
                 #String Format Example: 2013-09-28 20:30:55.78200
                 from_time = "2017-06-28 17:04:00.00000" #example
                 to_time = "2017-06-28 17:05:00.00000"    #example
                 docs = mongo.get_documents_from_to_time("testcoll", from_time, to_time)
                 #print "DOCS: " + str(docs)
+            else:
+                print "ENTRO AL ELSE"
+                self.write_message("Hola de Websocket")
 
         except Exception as e:
-            print ("Exception:")
+            print ("Exception in WebSocket Function: on_message: ")
             print e
         #self.write_message(message)
 
     # client disconnected
     def on_close(self):
-        print ("Client disconnected")
+        print ("Client disconnected" + " Self: " + str(self) + " Clients: " + str(clients))
         clients.remove(self)
 
 #MQTT Functions

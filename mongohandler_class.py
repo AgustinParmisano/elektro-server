@@ -1,6 +1,6 @@
 #PyMongo
 from pymongo import MongoClient
-
+from user_class import User
 #mongo_client = MongoClient('localhost', 27017)
 #db = mongo_client['testdb'] #db example
 #measures = db['collname'] #coll example
@@ -59,8 +59,19 @@ class MongoHandler:
         to_time = datetime.datetime.strptime(to_time, "%Y-%m-%d %H:%M:%S.%f")
         start = from_time #datetime.datetime(2017, 6, 28, 17, 4, 0, 457000)
         end = to_time #datetime.datetime(2017, 6, 28, 17, 5, 1, 457000)
-        posts = selfdb.testcoll.find({"timedata":{"$gte": start, "$lt": end}})
+        posts = self.db.testcoll.find({"timedata":{"$gte": start, "$lt": end}})
         output = []
         for post in posts:
             output.append({'potencia' : post["potencia"], 'tension' : post["tension"],'timedata' : post['timedata'], "state" : post['state']})
         return output
+
+    def get_user_auth(self, collname, username, password):
+        print "Username: " + str(username)
+        print "Password: " + str(password)
+        users_from_db = self.db.users.find({"username": username, "password": password})
+        for doc in users_from_db:
+            print "User From DB: " + str(doc)
+            print "Password From DB: " + str(doc["password"])
+            if doc["password"] == password:
+                return "piola"
+        return False

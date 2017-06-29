@@ -47,11 +47,27 @@
         });
       });
 
+      function loadDoc() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("demo").innerHTML = this.responseText;
+          }
+        };
+        xhttp.open("POST", "127.0.0.0:5000/login", true);
+        xhttp.send();
+      }
+
       </script>
 
    </head>
    <body>
       <p>Hola</p>
+
+      <button type="button" onclick="loadDoc()">Request data</button>
+
+      <p id="demo"></p>
+
       <div id="sse">
          <br>
         <label id="onbtn" class="btn btn-success" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
