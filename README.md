@@ -1,5 +1,10 @@
 # elektro-server
 
+~~~
+$ cat requirements.txt
+~~~
+
+
 Execute mosquitto broker:
 
 ~~~
