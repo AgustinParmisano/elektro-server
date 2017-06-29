@@ -5,6 +5,9 @@ import json
 import datetime, sys, time
 import ast
 from datetime import timedelta
+from device_class import Device
+from measure_class import Measure
+
 
 state = "on"
 
@@ -21,7 +24,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     message = str(msg.payload)
 
-    print(msg.topic+" "+message)
+    #print(msg.topic+" "+message)
 
     if message == "on":
         print "ON : " + message
@@ -39,6 +42,9 @@ def on_publish(mosq, obj, mid):
     print("mid: " + str(mid))
 
 if __name__ == "__main__":
+    d1 = Device('virtual_mac', '127.0.0.1', 'virtual_device',)
+
+
     #Start MQTT Client
     print("Starting MQTT Client")
     client = mqtt.Client()
@@ -46,9 +52,12 @@ if __name__ == "__main__":
     client.on_message = on_message
     client.connect("localhost", 1883, 60)
     client.loop_start()
+
     while True:
         time.sleep(1)
         potencia = random.randint(0,100)
         tension = random.randint(0,100)
+
         data = {"potencia": potencia, "tension": tension, "estado": state}
+        print str(data)
         publish.single("topic", str(data), hostname="localhost")

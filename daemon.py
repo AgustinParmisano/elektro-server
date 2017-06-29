@@ -10,6 +10,7 @@ import pprint
 from datetime import timedelta
 from mongohandler_class import MongoHandler
 from measure_class import Measure
+from device_class import Device
 
 q = Queue.Queue()
 
@@ -111,7 +112,7 @@ def on_message(client, userdata, msg):
         print("Saving Data in MongoDB" + str(measure.__dict__))
         mongo.insert_one_document("testcoll", measure.__dict__)
     except Exception as e:
-        print ("Exception:")
+        print ("Exception in MQTT Function: on_message: ")
         print e
 
 
