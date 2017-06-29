@@ -1,5 +1,4 @@
 # elektro-server
-============
 
 Execute mosquitto broker:
 
